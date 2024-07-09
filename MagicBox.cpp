@@ -2,7 +2,7 @@
 #include <GL/glut.h>
 
 
-
+GLfloat posX = 0.0f, posY = 0.0f;
 bool white = false;
 GLclampf v1[3] =
 { 1.0f, 0.0f, 0.0f }, v2[3] =
@@ -20,6 +20,7 @@ void reshape(GLsizei width, GLsizei height);
 void keyHandler(unsigned char key, int x, int y);
 void colorCopy(GLclampf copy[], GLclampf original[]);
 void Timer(int value);
+void movement(unsigned char key);
 
 int main(int argc, char **argv)
 {
@@ -49,7 +50,7 @@ void display()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(0.0f, 0.0f, 0.0f);
+	glTranslatef(posX, posY, 0.0f);
 	glBegin(GL_QUADS);
 	glColor3fv(v1);
 	glVertex2f(0.0f, 0.0f);
@@ -78,6 +79,18 @@ else
 		gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
 
 }
+void movement(unsigned char key)
+{
+	switch (key)
+	{
+	case 'a':
+		posX -= 0.02f;
+		break;
+	case 'd':
+		posX += 0.02f;
+	}
+}
+
 void colorCopy(GLclampf copy[], GLclampf original[])
 {
 	for (int i = 0; i < 3; i++)
@@ -86,15 +99,16 @@ void colorCopy(GLclampf copy[], GLclampf original[])
 void keyHandler(unsigned char key, int x, int y)
 {
 	switch (key)
-	case 'k':
 	{
-		if (white)
+	case 'k':
 		{
+		if (white)
+			{
 			colorCopy(v1, v1d);
 			colorCopy(v2, v2d);
 			colorCopy(v3, v3d);
 			colorCopy(v4, v4d);
-		}
+			}
 		else
 			for (int i = 0; i < 3; i++)
 			{
@@ -104,7 +118,13 @@ void keyHandler(unsigned char key, int x, int y)
 				v4[i] = 1.0;
 			}
 		white = !white;
-	break;
+		break;
+	}
+	case 'w':
+	case 'a':
+	case 'd':
+		movement(key);
+		break;
 	}
 
 }
