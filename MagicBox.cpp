@@ -1,24 +1,49 @@
 #include <windows.h>
 #include <GL/glut.h>
 
+
+
+bool white = false;
+GLclampf v1[3] =
+{ 1.0f, 0.0f, 0.0f }, v2[3] =
+{ 0.0f, 1.0f, 0.0f }, v3[3] =
+{ 0.0f, 0.0f, 1.0f }, v4[3] =
+{ 0.1f, 0.0f, 0.5f };
+GLclampf v1d[3] =
+{ 1.0f, 0.0f, 0.0f }, v2d[3] =
+{ 0.0f, 1.0f, 0.0f }, v3d[3] =
+{ 0.0f, 0.0f, 1.0f }, v4d[3] =
+{ 0.1f, 0.0f, 0.5f };
+void initGL();
 void display();
 void reshape(GLsizei width, GLsizei height);
+void keyHandler(unsigned char key, int x, int y);
+void colorCopy(GLclampf copy[], GLclampf original[]);
+void Timer(int value);
 
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE);
 	glutCreateWindow("Color Wheel");
 	glutInitWindowSize(640, 320);
 	glutInitWindowPosition(0, 0);
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
+	glutTimerFunc(0, Timer, 0);
+	glutKeyboardFunc(keyHandler);
+	initGL();
 	glutMainLoop();
 
 	return 0;
 }
-void display()
+void initGL()
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+void display()
+{
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -26,17 +51,17 @@ void display()
 
 	glTranslatef(0.0f, 0.0f, 0.0f);
 	glBegin(GL_QUADS);
-	glColor3f(1.0f, 0.0f, 0.0f);
+	glColor3fv(v1);
 	glVertex2f(0.0f, 0.0f);
-	glColor3f(0.0f, 1.0f, 0.0f);
+	glColor3fv(v2);
 	glVertex2f(0.0f, 0.5);
-	glColor3f(0.0f, 0.0f, 1.0f);
+	glColor3fv(v3);
 	glVertex2f(0.5f, 0.5f);
-	glColor3f(0.1f, 0.0f, 0.5f);
+	glColor3fv(v4);
 	glVertex2f(0.5f, 0.0f);
 	glEnd();
 
-	glFlush();
+	glutSwapBuffers();
 }
 void reshape(GLsizei width, GLsizei height)
 {
@@ -53,3 +78,41 @@ else
 		gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
 
 }
+void colorCopy(GLclampf copy[], GLclampf original[])
+{
+	for (int i = 0; i < 3; i++)
+		copy[i] = original[i];
+}
+void keyHandler(unsigned char key, int x, int y)
+{
+	switch (key)
+	case 'k':
+	{
+		if (white)
+		{
+			colorCopy(v1, v1d);
+			colorCopy(v2, v2d);
+			colorCopy(v3, v3d);
+			colorCopy(v4, v4d);
+		}
+		else
+			for (int i = 0; i < 3; i++)
+			{
+				v1[i] = 1.0;
+				v2[i] = 1.0;
+				v3[i] = 1.0;
+				v4[i] = 1.0;
+			}
+		white = !white;
+	break;
+	}
+
+}
+
+void Timer(int value)
+{
+	glutPostRedisplay();
+	glutTimerFunc(30, Timer, 0);
+}
+
+
