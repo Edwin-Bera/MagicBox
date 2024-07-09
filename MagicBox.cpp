@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <GL/glut.h>
 
-
+bool isjumping = false;
 GLfloat posX = 0.0f, posY = 0.0f;
 bool white = false;
 GLclampf v1[3] =
@@ -15,7 +15,7 @@ GLclampf v1d[3] =
 { 0.0f, 0.0f, 1.0f }, v4d[3] =
 { 0.1f, 0.0f, 0.5f };
 void gravity(GLfloat gravity);
-void jump();
+
 void initGL();
 void display();
 void reshape(GLsizei width, GLsizei height);
@@ -65,7 +65,15 @@ void display()
 	glEnd();
 
 	glutSwapBuffers();
-	gravity(0.02);
+
+	if (isjumping)
+	{
+		posY += 0.3f;
+		isjumping = false;
+	}
+	else
+
+		gravity(0.015);
 }
 void reshape(GLsizei width, GLsizei height)
 {
@@ -87,10 +95,14 @@ void movement(unsigned char key)
 	switch (key)
 	{
 	case 'a':
-		posX -= 0.02f;
+		posX -= 0.05f;
 		break;
 	case 'd':
-		posX += 0.02f;
+		posX += 0.05f;
+		break;
+	case 'w':
+		if (posY <= -1)
+			isjumping = true;
 	}
 }
 
@@ -135,7 +147,7 @@ void keyHandler(unsigned char key, int x, int y)
 void Timer(int value)
 {
 	glutPostRedisplay();
-	glutTimerFunc(30, Timer, 0);
+	glutTimerFunc(15, Timer, 0);
 }
 void gravity(GLfloat gravity)
 {
