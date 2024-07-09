@@ -14,6 +14,8 @@ GLclampf v1d[3] =
 { 0.0f, 1.0f, 0.0f }, v3d[3] =
 { 0.0f, 0.0f, 1.0f }, v4d[3] =
 { 0.1f, 0.0f, 0.5f };
+void gravity(GLfloat gravity);
+void jump();
 void initGL();
 void display();
 void reshape(GLsizei width, GLsizei height);
@@ -63,6 +65,7 @@ void display()
 	glEnd();
 
 	glutSwapBuffers();
+	gravity(0.02);
 }
 void reshape(GLsizei width, GLsizei height)
 {
@@ -133,6 +136,11 @@ void Timer(int value)
 {
 	glutPostRedisplay();
 	glutTimerFunc(30, Timer, 0);
+}
+void gravity(GLfloat gravity)
+{
+	if (posY > -1)
+		posY -= gravity;
 }
 
 
